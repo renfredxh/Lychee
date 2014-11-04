@@ -1,12 +1,13 @@
 FROM ubuntu:14.04
 
+ENV DEBIAN_FRONTEND noninteractive
+
 # Install base packages
 RUN apt-get update
-RUN apt-get -y install git curl nano wget build-essential
 
 # Install Apache, PHP, MySQL, and ImageMagick
-RUN apt-get -y install apache2 mysql-server libapache2-mod-php5 imagemagick
-RUN apt-get -y install php5-mysql php5-gd php5-curl php5-imagick
+RUN apt-get -y install apache2 mysql-server libapache2-mod-php5 imagemagick \
+  php5-mysql php5-gd php5-curl php5-imagick git
 
 # Modify php.ini to contain the following settings:
 #   max_execution_time = 200
@@ -27,8 +28,8 @@ WORKDIR /app
 RUN git clone https://github.com/electerious/Lychee.git .
 
 # Set file permissions
-RUN chown www-data:www-data /app -R
-RUN chmod -R 777 uploads/ data/
+RUN chown -R www-data:www-data /app && \
+  chmod -R 777 uploads/ data/
 
 EXPOSE 80
 CMD scripts/start
